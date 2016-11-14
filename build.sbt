@@ -16,6 +16,8 @@ libraryDependencies ++= Seq(
   javaJpa,
   "org.hibernate" % "hibernate-entitymanager" % "5.1.0.Final"
 )
-
+PlayKeys.externalizeResources := false
+libraryDependencies += evolutions
+libraryDependencies += jdbc
 
 fork in run := true
