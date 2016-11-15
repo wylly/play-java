@@ -1,6 +1,8 @@
 package controllers;
 
 import models.Campaign;
+import play.data.Form;
+import play.data.FormFactory;
 import play.db.jpa.JPAApi;
 import play.db.jpa.Transactional;
 import play.libs.Json;
@@ -20,11 +22,15 @@ import java.util.List;
 public class HomeController extends Controller {
 
     private final JPAApi jpaApi;
+    private final FormFactory formFactory;
 
     @Inject
-    public HomeController(JPAApi api) {
-        this.jpaApi = api;
+    public HomeController(JPAApi jpaApi, FormFactory formFactory) {
+        this.jpaApi = jpaApi;
+        this.formFactory = formFactory;
     }
+
+
 
     @Transactional
     public Result all() {
@@ -35,12 +41,22 @@ public class HomeController extends Controller {
         return ok(builder.toString());
     }
 
+//    @Transactional
+//    public Result add(String name) {
+//        EntityManager em = jpaApi.em();
+//        Campaign campaign = new Campaign(name);
+//        em.persist(campaign);
+//        return ok("added : " + name);
+//    }
+
     @Transactional
-    public Result add(String name) {
+    public Result add() {
+        Form<Campaign> campaignForm = formFactory.form(Campaign.class);
+        System.out.println(campaignForm.toString());
+        Campaign campaign = campaignForm.bindFromRequest().get();
         EntityManager em = jpaApi.em();
-        Campaign campaign = new Campaign(name);
         em.persist(campaign);
-        return ok("added : " + name);
+        return redirect(routes.HomeController.all());
     }
 
     /**
@@ -50,7 +66,7 @@ public class HomeController extends Controller {
      * <code>GET</code> request with a path of <code>/</code>.
      */
     public Result index() {
-        return ok(index.render("Willkommenn!"));
+        return ok(index.render());
     }
 
 }

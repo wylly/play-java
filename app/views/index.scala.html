@@ -1,20 +1,24 @@
-@*
- * This template takes a single argument, a String containing a
- * message to display.
- *@
-@(message: String)
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        @* Here's where we render the page title `String`. *@
+    <title>"Campaign"</title>
+    @headers()
+    </head>
+    <body>
+        <div class="container">
+            <div class="page-header">
+                <h1>Campaigns CRUD</h1>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Add new campaign</h3>
+                </div>
+                <div class="panel-body">
+                    @addForm()
+                </div>
+            </div>
+        </div>
 
-@*
- * Call the `main` template with two arguments. The first
- * argument is a `String` with the title of the page, the second
- * argument is an `Html` object containing the body of the page.
- *@
-@main("Welcome to Play") {
-
-    @*
-     * Get an `Html` object by calling the built-in Play welcome
-     * template and passing a `String` message.
-     *@
-    @play20.welcome(message, style = "Java")
-
-}
+    </body>
+</html>
