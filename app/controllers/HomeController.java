@@ -32,22 +32,18 @@ public class HomeController extends Controller {
 
 
 
-    @Transactional
     public Result all() {
-        Query query = jpaApi.em().createQuery("SELECT e FROM Campaign e");
-        List campaigns = query.getResultList();
+        List<Campaign> campaigns = getAllCampaigns();
         final StringBuilder builder = new StringBuilder();
         campaigns.forEach((campaign) -> builder.append(Json.toJson(campaign)).append("\n"));
         return ok(builder.toString());
     }
 
-//    @Transactional
-//    public Result add(String name) {
-//        EntityManager em = jpaApi.em();
-//        Campaign campaign = new Campaign(name);
-//        em.persist(campaign);
-//        return ok("added : " + name);
-//    }
+    @Transactional
+    private List<Campaign> getAllCampaigns() {
+        Query query = jpaApi.em().createQuery("SELECT e FROM Campaign e");
+        return query.getResultList();
+    }
 
     @Transactional
     public Result add() {
@@ -56,7 +52,7 @@ public class HomeController extends Controller {
         Campaign campaign = campaignForm.bindFromRequest().get();
         EntityManager em = jpaApi.em();
         em.persist(campaign);
-        return redirect(routes.HomeController.all());
+        return redirect(routes.HomeController.index());
     }
 
     /**
@@ -65,8 +61,9 @@ public class HomeController extends Controller {
      * this method will be called when the application receives a
      * <code>GET</code> request with a path of <code>/</code>.
      */
+    @Transactional
     public Result index() {
-        return ok(index.render());
+        return ok(index.render(getAllCampaigns()));
     }
 
 }

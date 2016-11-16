@@ -1,3 +1,4 @@
+@(campaigns: List[Campaign])
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -12,11 +13,21 @@
             </div>
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    <h3 class="panel-title">Add new campaign</h3>
+                    <h2 class="panel-title">Add new campaign</h2>
                 </div>
-                <div class="panel-body">
+                <div class="panel-body" id="add-panel">
                     @addForm()
                 </div>
+            </div>
+            <div class="panel panel-default">
+                    <!-- Default panel contents -->
+                <div class="panel-heading">
+                    <h2 class="panel-title">All campaigns in database</h2>
+                </div>
+                <div class="panel-body">
+                    <p>To update click pencil icon, to delete click cross icon</p>
+                </div>
+                    @readCampaigns(campaigns)
             </div>
         </div>
 
