@@ -1,53 +1,111 @@
-<form class="form-horizontal" method="post" action="@routes.HomeController.add()">
+@(isNew: Boolean, editCampaign: Campaign)
+@categoryList = @{
+    Arrays.asList(
+        "Category one",
+        "Another category",
+        "lowercase category",
+        "finishing category"
+    )
+}
+
+@townList = @{
+    Arrays.asList(
+        "Kraków",
+        "Katowice",
+        "Warszawa",
+        "Radom",
+        "Sosnowiec"
+    )
+}
+
+<form class="form-horizontal" method="post"
+    @if(isNew) {
+        action="@routes.HomeController.add()">
+    } else {
+        action="/save/@editCampaign.getCampaignid">
+    }
     <div class="form-group">
         <label class="control-label col-sm-2" for="camp-name">Campaign name:</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" id="camp-name" name="name" placeholder="Enter campaign name" required>
+            <input type="text" class="form-control" id="camp-name" name="name" placeholder="Enter campaign names" required @if(isNew == false) {
+                value="@editCampaign.getName"
+                }
+            >
         </div>
     </div>
+
     <div class="form-group">
         <label class="control-label col-sm-2" for="camp-keywords" >Keywords:</label>
         <div class="col-sm-10">
-            <textarea class="form-control" id="camp-keywords" placeholder="Enter keywords" required></textarea>
+            <select class="categories col-sm-12" id="camp-keyword" name="categories[]" multiple="multiple" required>
+            @for(category <- categoryList) {
+                <option value="@category"
+                @if(isNew == false && editCampaign.getCategories!=null && editCampaign.getCategories.contains(category)) {
+                    selected
+                }
+                >@category </option>
+            }
+            </select>
         </div>
     </div>
     <div class="form-group">
         <label class="control-label col-sm-2" for="camp-bid">Bid amount:</label>
         <div class="col-sm-10">
-            <input type="number" class="form-control" name="bid" id="camp-bid" min="10" required>
+            <input type="number" class="form-control" name="bid" id="camp-bid" min="10" required @if(isNew == false) {
+                value="@editCampaign.getBid"
+                }>
         </div>
     </div>
     <div class="form-group">
         <label class="control-label col-sm-2" for="camp-fund">Campaign fund:</label>
         <div class="col-sm-10">
-            <input type="number" class="form-control" name="fund" id="camp-fund" required>
+            <input type="number" class="form-control" name="fund" id="camp-fund" required @if(isNew == false) {
+                value="@editCampaign.getFund"
+                }>
         </div>
     </div>
     <div class="form-group">
         <label class="radio control-label col-sm-2" for="camp-status">Campaign status:</label>
         <div class="col-sm-5">
-            <label class="radio-inline"><input type="radio"  value="true" id="camp-status" name="status" checked required>On</label>
+            <label class="radio-inline"><input type="radio" value="true" id="camp-status" name="status" @if(!(isNew == false && !editCampaign.isStatus)) {
+                checked
+            }
+                required>
+                On</label>
         </div>
         <div class="col-sm-5">
-            <label class="radio-inline"><input type="radio" value="false" id="camp-status" name="status" required>Off</label>
+            <label class="radio-inline"><input type="radio" value="false" id="camp-status" name="status"
+                @if(isNew == false && !editCampaign.isStatus) {
+                    checked
+                }
+                required>Off</label>
         </div>
     </div>
     <div class="form-group">
         <label class="control-label col-sm-2" for="camp-town" >Campaign town:</label>
         <div class="col-sm-10">
             <select class="form-control" id="camp-town" name="town" required>
-                <option value="Krk">Krk</option>
-                <option value="Kato">Kato</option>
+            @for(town <- townList) {
+                <option value="@town"
+                @if(isNew == false && editCampaign.getTown!=null && editCampaign.getTown.equals(town)) {
+                    selected
+                }
+                >@town </option>
+            }
             </select>
         </div>
     </div>
     <div class="form-group">
         <label class="control-label col-sm-2" for="camp-radius">Campaign radius:</label>
-
-            <div class="col-sm-9">
-                <input type="number" class="form-control" id="camp-radius" name="radius" min="0" required>
-            </div>
-            <label class="col-sm-1 control-label" for="camp-radius">Km</label>
+        <div class="col-sm-9">
+            <input type="number" class="form-control" id="camp-radius" name="radius" min="0" required @if(isNew == false) {
+                value="@editCampaign.getRadius"
+                }>
+        </div>
+        <label class="col-sm-1 control-label" for="camp-radius">Km</label>
     </div>
-    <button type="submit" class="btn btn-default">Submit</button>
+    <button type="submit" class="btn btn-default" id="submitButton">Submit</button>
+    @if(!isNew) {
+        <a href="/" ><button type="reset" class="btn btn-default" >Cancel</button></a>
+    }
 </form>

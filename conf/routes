@@ -3,14 +3,12 @@
 # ~~~~
 
 # An example controller showing a sample home page
-GET     /                           controllers.HomeController.index()
-#GET     /add/:name                           controllers.HomeController.add(name: String)
-GET     /all                           controllers.HomeController.all
-POST    /add                 controllers.HomeController.add
-# An example controller showing how to use dependency injection
-GET     /count                      controllers.CountController.count
-# An example controller showing how to write asynchronous code
-GET     /message                    controllers.AsyncController.message
+GET         /                    controllers.HomeController.index()
+GET         /delete/:id          controllers.HomeController.deleteCampaign(id: String)
+GET         /edit/:id            controllers.HomeController.edit(id: Long)
+GET         /all                 controllers.HomeController.all
+POST        /add                 controllers.HomeController.add
+POST        /save/:id            controllers.HomeController.save(id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file        controllers.Assets.versioned(path="/public", file: Asset)

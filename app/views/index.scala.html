@@ -1,4 +1,4 @@
-@(campaigns: List[Campaign])
+@(campaigns: List[Campaign], isNew:Boolean, editedCampaign: Campaign)
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -16,7 +16,7 @@
                     <h2 class="panel-title">Add new campaign</h2>
                 </div>
                 <div class="panel-body" id="add-panel">
-                    @addForm()
+                    @addForm(isNew,editedCampaign)
                 </div>
             </div>
             <div class="panel panel-default">

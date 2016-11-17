@@ -1,7 +1,7 @@
 package controllers;
 
 import models.Campaign;
-import play.data.Form;
+import play.data.DynamicForm;
 import play.data.FormFactory;
 import play.db.jpa.JPAApi;
 import play.db.jpa.Transactional;
@@ -14,6 +14,9 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
 import java.util.List;
+import java.util.Map;
+import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 /**
  * This controller contains an action to handle HTTP requests
@@ -30,6 +33,12 @@ public class HomeController extends Controller {
         this.formFactory = formFactory;
     }
 
+    @Transactional
+    public Result deleteCampaign(String id) {
+        Campaign campaign = jpaApi.em().find(Campaign.class, Long.parseLong(id));
+        jpaApi.em().remove(campaign);
+        return redirect(routes.HomeController.index());
+    }
 
 
     public Result all() {
@@ -47,12 +56,41 @@ public class HomeController extends Controller {
 
     @Transactional
     public Result add() {
-        Form<Campaign> campaignForm = formFactory.form(Campaign.class);
-        System.out.println(campaignForm.toString());
-        Campaign campaign = campaignForm.bindFromRequest().get();
+        DynamicForm form = formFactory.form().bindFromRequest();
+        Map<String, String> formData = mergeCategoriesInForm(form.data());
+        System.out.println(formData.keySet().stream().reduce("",(a,b)->a+" "+b));
+        Campaign campaign = formFactory.form(Campaign.class).bind(formData).get();
         EntityManager em = jpaApi.em();
         em.persist(campaign);
         return redirect(routes.HomeController.index());
+    }
+
+    private Map<String, String> mergeCategoriesInForm(Map<String, String> formData) {
+        List<String> categoriesKeys = formData.keySet().stream()
+                .filter(key -> key.contains("categories"))
+                .collect(Collectors.toList());
+        StringJoiner sj = new StringJoiner(", ");
+        for (String key : categoriesKeys) {
+            sj.add(formData.get(key));
+            formData.remove(key);
+        }
+        formData.put("categories",sj.toString());
+        return formData;
+    }
+
+    @Transactional
+    public Result save(long id) {
+        DynamicForm form = formFactory.form().bindFromRequest();
+        Map<String, String> formData = mergeCategoriesInForm(form.data());
+        Campaign campaign = formFactory.form(Campaign.class).bind(formData).get();
+        campaign.setCampaignid(id);
+        jpaApi.em().merge(campaign);
+        return redirect(routes.HomeController.index());
+    }
+
+    @Transactional
+    public Result edit(long id) {
+        return index(false, jpaApi.em().find(Campaign.class, id));
     }
 
     /**
@@ -63,7 +101,11 @@ public class HomeController extends Controller {
      */
     @Transactional
     public Result index() {
-        return ok(index.render(getAllCampaigns()));
+        return index(true, new Campaign());
     }
 
+    @Transactional
+    public Result index(boolean isNew, Campaign campaign) {
+        return ok(index.render(getAllCampaigns(), isNew, campaign));
+    }
 }

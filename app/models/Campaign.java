@@ -7,7 +7,7 @@ import javax.persistence.*;
 public class Campaign {
     private long campaignid;
     private String name;
-//    private Set<Keyword> keywords = new HashSet<>(0);
+    private String categories;
     private float bid;
     private float fund;
     private boolean status;
@@ -41,15 +41,21 @@ public class Campaign {
         this.name = name;
     }
 
+    @Column
+    public String getCategories() {
+        return categories;
+    }
 
-//    @ManyToMany(targetEntity = Keyword.class)
-//    public Set<Keyword> getKeywords() {
-//        return keywords;
-//    }
-//
-//    public void setKeywords(Set<Keyword> keywords) {
-//        this.keywords = keywords;
-//    }
+    public void setCategories(String categories) {
+        this.categories = categories;
+    }
+
+    public void setCategories(String[] categories) {
+        this.categories ="";
+        for(String category : categories){
+            this.categories += category;
+        }
+    }
 
     @Column
     public float getBid() {
