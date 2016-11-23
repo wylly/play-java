@@ -6,6 +6,7 @@ import javax.persistence.*;
 @Table(name = "CAMPAIGN")
 public class Campaign {
     private long campaignid;
+    private Long productid;
     private String name;
     private String categories;
     private float bid;
@@ -30,6 +31,15 @@ public class Campaign {
 
     public void setCampaignid(long campaignid) {
         this.campaignid = campaignid;
+    }
+
+    @Column
+    public Long getProductid() {
+        return productid;
+    }
+
+    public void setProductid(Long productid) {
+        this.productid = productid;
     }
 
     @Column

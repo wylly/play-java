@@ -2,6 +2,7 @@
 
 <table class="table">
     <tr>
+        <th>Product id</th>
         <th>Campaign name</th>
         <th>Categories</th>
         <th>Bid amount</th>
@@ -14,6 +15,7 @@
     </tr>
     @for(campaign <- campaigns) {
         <tr>
+            <td>@campaign.getProductid</td>
             <td>@campaign.getName</td>
             <td>@campaign.getCategories</td>
             <td>@campaign.getBid</td>
